@@ -1,0 +1,52 @@
+package com.microservices.server.controller;
+
+import com.microservices.server.model.SecureRequest;
+import com.microservices.server.util.AESUtil;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.crypto.SecretKey;
+import java.security.PrivateKey;
+
+@RestController
+@RequestMapping("/api")
+public class EmployeeController {
+
+    @Autowired
+    private PrivateKey privateKey;
+
+    @PostMapping("/employee")
+    public String getEmployee(@RequestBody SecureRequest request) {
+
+        try {
+            //  LOG 1: Encrypted input
+            System.out.println("ENCRYPTED DATA (SERVER) = " + request.getData());
+            System.out.println("ENCRYPTED AES KEY (SERVER) = " + request.getKey());
+
+            //  STEP 1: Decrypt AES key using RSA
+            SecretKey aesKey = AESUtil.decryptAESKey(request.getKey(), privateKey);
+
+            //  STEP 2: Decrypt data using AES key
+            String decrypted = AESUtil.decrypt(request.getData(), aesKey);
+
+            //  LOG 2: Decrypted data
+            System.out.println("DECRYPTED REQUEST (SERVER) = " + decrypted);
+
+            //  STEP 3: Business logic
+            String response = "Received ID: " + decrypted;
+
+            //  STEP 4: Encrypt response using SAME AES key
+            String encryptedResponse = AESUtil.encrypt(response, aesKey);
+
+            //  LOG 3: Encrypted response
+            System.out.println("ENCRYPTED RESPONSE (SERVER) = " + encryptedResponse);
+
+            return encryptedResponse;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error occurred";
+        }
+    }
+}

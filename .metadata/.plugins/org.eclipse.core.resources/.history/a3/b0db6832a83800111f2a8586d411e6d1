@@ -1,0 +1,5 @@
+package com.microservices.client.controller;
+
+public class ClientController {
+
+}

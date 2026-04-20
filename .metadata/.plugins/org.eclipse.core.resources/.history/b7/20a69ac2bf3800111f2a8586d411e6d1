@@ -1,0 +1,74 @@
+package com.microservices.client.service;
+
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.util.*;
+import org.springframework.web.client.RestTemplate;
+
+import com.microservices.client.model.Employee;
+import com.microservices.client.util.AESUtil;
+
+import java.util.Map;
+
+@Service
+public class EmployeeService {
+
+    public Employee callServer() {
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //  STEP 1: Get OAuth2 token
+        HttpHeaders tokenHeaders = new HttpHeaders();
+        tokenHeaders.setBasicAuth("my-client", "secret");
+        tokenHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "client_credentials");
+
+        HttpEntity<MultiValueMap<String, String>> tokenRequest =
+                new HttpEntity<>(body, tokenHeaders);
+
+        Map tokenResponse = restTemplate.postForObject(
+                "http://localhost:9000/oauth2/token",
+                tokenRequest,
+                Map.class
+        );
+
+        String token = (String) tokenResponse.get("access_token");
+
+        //  STEP 2: Encrypt request data
+        String plainData = "101";
+        String encryptedData = AESUtil.encrypt(plainData);
+        
+        
+        System.out.println("ENCRYPTED REQUEST = " + encryptedData);
+
+        //  STEP 3: Call Resource Server (8081)
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.TEXT_PLAIN); // IMPORTANT
+
+        HttpEntity<String> request = new HttpEntity<>(encryptedData, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                "http://localhost:8081/api/employee",
+                HttpMethod.POST,
+                request,
+                String.class
+        );
+
+        // 🔹 STEP 4: Decrypt response
+        String encryptedResponse = response.getBody();
+        System.out.println("ENCRYPTED RESPONSE = " + encryptedResponse);
+
+        String decryptedResponse = AESUtil.decrypt(encryptedResponse);
+        System.out.println("DECRYPTED RESPONSE = " + decryptedResponse);
+
+        // 🔹 STEP 5: Convert to Employee 
+        Employee emp = new Employee();
+        emp.setId("101");
+        emp.setName(decryptedResponse);
+
+        return emp;
+    }
+}

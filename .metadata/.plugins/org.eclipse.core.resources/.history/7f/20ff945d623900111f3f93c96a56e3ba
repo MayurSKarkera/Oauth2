@@ -1,0 +1,5 @@
+package com.microservices.client.config;
+
+public class PublicKeyConfig {
+
+}

@@ -1,0 +1,16 @@
+package com.microservices.server.controller;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.microservices.server.model.Employee;
+
+@RestController
+@RequestMapping("/api")
+public class EmployeeController {
+
+    @PostMapping("/employee")
+    public Employee getEmployee(@RequestBody Employee emp) {
+        emp.setName("Mayur");
+        return emp;
+    }
+}

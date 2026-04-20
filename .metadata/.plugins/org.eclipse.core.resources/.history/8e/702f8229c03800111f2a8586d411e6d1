@@ -1,0 +1,26 @@
+package com.microservices.server.controller;
+
+import org.springframework.web.bind.annotation.*;
+import com.microservices.server.util.AESUtil;
+
+@RestController
+@RequestMapping("/api")
+public class EmployeeController {
+
+    @PostMapping("/employee")
+    public String getEmployee(@RequestBody String encryptedData) {
+
+        // 🔹 STEP 1: Decrypt incoming data
+        String decrypted = AESUtil.decrypt(encryptedData);
+
+        System.out.println("DECRYPTED DATA = " + decrypted);
+
+        // 🔹 STEP 2: Process data
+        String response = "Received ID: " + decrypted;
+
+        // 🔹 STEP 3: Encrypt response
+        String encryptedResponse = AESUtil.encrypt(response);
+
+        return encryptedResponse;
+    }
+}
