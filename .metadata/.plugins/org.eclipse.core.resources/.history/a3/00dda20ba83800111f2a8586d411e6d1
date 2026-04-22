@@ -1,5 +1,0 @@
-package com.microservices.client.model;
-
-public class Employee {
-
-}

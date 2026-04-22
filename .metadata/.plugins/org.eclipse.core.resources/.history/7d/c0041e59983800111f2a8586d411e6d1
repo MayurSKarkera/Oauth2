@@ -1,5 +1,0 @@
-package com.auth.auth_server.config;
-
-public class ClientConfig {
-
-}

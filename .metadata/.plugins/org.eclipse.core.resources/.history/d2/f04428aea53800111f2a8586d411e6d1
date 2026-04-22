@@ -1,5 +1,0 @@
-package com.microservices.server.config;
-
-public class SecurityConfig {
-
-}
