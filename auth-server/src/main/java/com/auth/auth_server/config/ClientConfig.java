@@ -21,7 +21,8 @@ public class ClientConfig {
                 .clientId("my-client")
                 .clientSecret("{noop}secret")
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scope("read")
+                .scope("admin")
+                .scope("user")
                 .build();
 
         return new InMemoryRegisteredClientRepository(client);

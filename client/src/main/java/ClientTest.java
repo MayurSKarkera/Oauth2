@@ -23,7 +23,7 @@ public class ClientTest {
         String encryptedData = Base64.getEncoder()
                 .encodeToString(aesCipher.doFinal(json.getBytes()));
 
-        //  PASTE YOUR PUBLIC KEY HERE
+        
         String publicKeyStr = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzPfQo0XKWNOXuPiZyBozNLExXmgilthXf72q4P0YyxHIm0JXDIu7OGCoFqyuo+W17OE/Cdmzv7kgkpiEUP5jruT64tzdm/CiAsu8daKbIxsiRFgToc/VvRrYOa0WATMsW8+WDBQEtHBhGnqBOggF0UcFn+MvQ8em2z8KMCfE57mHWP4C3Smy5E2PJo+ZFLfdDvnZwTvZ+dwRPUlR70ORa44C7JXaMGwFSo+BFNxWsXqdE1Sy70XAY5AWSUF9V4srnT3iUgawi7gcc/WOgb/q3KoFFassyi6MBWu3tnyo8mMB+7KkWVZE/okQAyZ4VLkkccUc2LEvedrhqY6cjtpHxwIDAQAB";
 
         byte[] decoded = Base64.getDecoder().decode(publicKeyStr);
